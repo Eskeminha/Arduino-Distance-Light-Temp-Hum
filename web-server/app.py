@@ -5,7 +5,8 @@ import time
 app = Flask(__name__)
 
 last_valid_data = "Aguardando primeira leitura..."
-last_status = False  # False = erro, True = sucesso
+last_status = False  # True = sucesso, False = erro
+last_light_percent = 0
 
 HTML_TEMPLATE = '''
 <!DOCTYPE html>
@@ -47,6 +48,7 @@ HTML_TEMPLATE = '''
             font-size: 1.3rem;
             color: #222;
             white-space: pre-line;
+            margin-bottom: 20px;
         }
         footer {
             margin-top: 20px;
@@ -60,12 +62,26 @@ HTML_TEMPLATE = '''
             border-radius: 50%;
             margin-left: 10px;
             border: 1px solid #555;
-            background-color: grey; /* initial */
+            background-color: grey;
         }
         .status-label {
             font-size: 0.9rem;
             color: #555;
             margin-top: 8px;
+        }
+        .light-bar-container {
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            height: 20px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .light-bar {
+            background-color: gold;
+            height: 100%;
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s ease;
         }
     </style>
     <script>
@@ -81,6 +97,10 @@ HTML_TEMPLATE = '''
 
                 const statusText = document.querySelector('.status-label');
                 statusText.innerText = json.status ? "Status: Leitura OK" : "Status: Erro na leitura (mostrando último valor)";
+
+                const lightPercent = json.light_percent || 0;
+                document.querySelector('.light-bar').style.width = lightPercent + "%";
+
             } catch (err) {
                 console.error("Erro na leitura do servidor:", err);
             }
@@ -94,6 +114,9 @@ HTML_TEMPLATE = '''
     <div class="container">
         <h1>📟 Arduino Sensor Dashboard <span class="led"></span></h1>
         <div class="sensor-data">Carregando dados...</div>
+        <div class="light-bar-container">
+            <div class="light-bar"></div>
+        </div>
         <div class="status-label">Status: aguardando...</div>
         <footer>Atualizado automaticamente a cada segundo.</footer>
     </div>
@@ -107,7 +130,7 @@ def index():
 
 @app.route('/data')
 def get_data():
-    global last_valid_data, last_status
+    global last_valid_data, last_status, last_light_percent
     try:
         with serial.Serial(port='COM3', baudrate=9600, timeout=1) as arduino:
             time.sleep(0.5)
@@ -120,13 +143,29 @@ def get_data():
             if line:
                 last_valid_data = line
                 last_status = True
+
+                # Extrair valor da luz da linha se presente (espera algo tipo "Light: 523" ou similar)
+                if "Light:" in line:
+                    try:
+                        parts = line.split("Light:")
+                        value = int(parts[-1].strip().split()[0])
+                        inverted = 1023 - value
+                        last_light_percent = int((inverted / 1023) * 100)
+                    except:
+                        last_light_percent = 0
+                else:
+                    last_light_percent = 0
             else:
                 raise Exception("Linha vazia")
     except Exception as e:
         print(f"[ERRO SERIAL] {e}")
         last_status = False
 
-    return jsonify({'data': last_valid_data, 'status': last_status})
+    return jsonify({
+        'data': last_valid_data,
+        'status': last_status,
+        'light_percent': last_light_percent
+    })
 
 if __name__ == '__main__':
     app.run(debug=False)

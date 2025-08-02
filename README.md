@@ -61,7 +61,7 @@ python app.py
 http://127.0.0.1:5000
 ```
 
-A página será atualizada automaticamente a cada segundo, com um **indicador verde/vermelho** para status de leitura (OK/Erro).
+A página será atualizada automaticamente a cada segundo, com um **indicador verde/vermelho** para status de leitura (OK/Erro) e uma barra de intensidade de luz baseada na leitura invertida (quanto mais claro, maior o valor).
 
 ---
 
@@ -92,12 +92,14 @@ A página será atualizada automaticamente a cada segundo, com um **indicador ve
 
 ---
 
-## 📸 Visual
+## 📊 Intensidade de Luz com Barra Visual
 
-- Interface moderna e responsiva
-- Dados em tempo real
-- Indicador de status de leitura (🟢/🔴)
-- Layout limpo e leve, pronto para uso local
+A leitura do sensor de luminosidade agora é exibida também com uma **barra de intensidade horizontal**, invertida para refletir de forma intuitiva:
+
+- 💡 **Mais claro → barra cheia**
+- 🌑 **Mais escuro → barra vazia**
+
+Isso permite identificar rapidamente mudanças de iluminação no ambiente de forma visual.
 
 ---
 
