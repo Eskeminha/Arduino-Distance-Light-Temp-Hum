@@ -18,11 +18,9 @@ void setup() {
 
 void loop() {
   // ---- Read Temperature & Humidity ----
-  int chk = DHT.read11(DHT11_PIN);
-  Serial.print("Temperature (C): ");
-  Serial.println(DHT.temperature);
-  Serial.print("Humidity (%): ");
-  Serial.println(DHT.humidity);
+  DHT.read11(DHT11_PIN);
+  float temp = DHT.temperature;
+  float hum = DHT.humidity;
 
   // ---- Read Distance from HC-SR04 ----
   digitalWrite(trigPin, LOW);
@@ -33,14 +31,25 @@ void loop() {
 
   float duration = pulseIn(echoPin, HIGH);
   float distance = (duration * 0.0343) / 2;
-  Serial.print("Distance (cm): ");
-  Serial.println(distance);
 
   // ---- Read Light Level from Photosensor ----
   int lightLevel = analogRead(photoPin);
-  Serial.print("Light Level (0-1023): ");
-  Serial.println(lightLevel);
 
-  // ---- Delay between readings ----
-  delay(4000); // 1 second
+  // ---- Print All Data in One Line ----
+  Serial.print("Temp: ");
+  Serial.print(temp, 1);         // 1 decimal place
+  Serial.print(" C\t");
+
+  Serial.print("Hum: ");
+  Serial.print(hum, 1);
+  Serial.print(" %\t");
+
+  Serial.print("Dist: ");
+  Serial.print(distance, 1);
+  Serial.print(" cm\t");
+
+  Serial.print("Light: ");
+  Serial.println(lightLevel);    // ends line
+
+  delay(100); // Fast refresh rate for responsiveness
 }
