@@ -1,7 +1,17 @@
 
+<p align="center">
+  <img alt="Build" src="https://img.shields.io/badge/build-manual-bluegrey?style=flat-square">
+  <img alt="License" src="https://img.shields.io/badge/license-Acadêmico-blue?style=flat-square">
+  <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-blue?style=flat-square">
+  <img alt="Python" src="https://img.shields.io/badge/Python-3.8%2B-blue?style=flat-square&logo=python">
+  <img alt="Flask" src="https://img.shields.io/badge/Framework-Flask-black?style=flat-square&logo=flask">
+  <img alt="Arduino" src="https://img.shields.io/badge/Hardware-Arduino-green?style=flat-square&logo=arduino">
+  <img alt="Status" src="https://img.shields.io/badge/status-em%20desenvolvimento-yellow?style=flat-square">
+</p>
+
 # 📟 Arduino Distance Light Temp Hum
 
-Projeto completo que integra sensores de **temperatura (DHT11)**, **distância (HC-SR04)** e **luminosidade (HM Photosensor)** com um **servidor web Flask**, exibindo os dados em tempo real com visual moderno e indicadores visuais de status.
+Projeto completo que integra sensores de **temperatura (DHT11)**, **distância (HC-SR04)** e **luminosidade (HM Photosensor)** com um **servidor web Flask**, exibindo os dados em tempo real com visual moderno, barra de intensidade de luz e indicadores visuais de status.
 
 ---
 
@@ -61,7 +71,7 @@ python app.py
 http://127.0.0.1:5000
 ```
 
-A página será atualizada automaticamente a cada segundo, com um **indicador verde/vermelho** para status de leitura (OK/Erro) e uma barra de intensidade de luz baseada na leitura invertida (quanto mais claro, maior o valor).
+A página será atualizada automaticamente a cada segundo, com um **indicador verde/vermelho** para status de leitura (OK/Erro) e uma **barra de intensidade de luz** baseada na leitura invertida (quanto mais claro, maior o valor da barra).
 
 ---
 
@@ -138,5 +148,3 @@ Isso permite identificar rapidamente mudanças de iluminação no ambiente de fo
 
 Desenvolvido por [Seu Nome ou GitHub]  
 Com inspiração em projetos didáticos de integração entre hardware e web.
-
----
