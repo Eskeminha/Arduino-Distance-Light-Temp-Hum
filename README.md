@@ -1,33 +1,33 @@
 
 <p align="center">
   <img alt="Build" src="https://img.shields.io/badge/build-manual-bluegrey?style=flat-square">
-  <img alt="License" src="https://img.shields.io/badge/license-Acadêmico-blue?style=flat-square">
+  <img alt="License" src="https://img.shields.io/badge/license-Academic-blue?style=flat-square">
   <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-blue?style=flat-square">
   <img alt="Python" src="https://img.shields.io/badge/Python-3.8%2B-blue?style=flat-square&logo=python">
   <img alt="Flask" src="https://img.shields.io/badge/Framework-Flask-black?style=flat-square&logo=flask">
   <img alt="Arduino" src="https://img.shields.io/badge/Hardware-Arduino-green?style=flat-square&logo=arduino">
-  <img alt="Status" src="https://img.shields.io/badge/status-em%20desenvolvimento-yellow?style=flat-square">
+  <img alt="Status" src="https://img.shields.io/badge/status-in%20development-yellow?style=flat-square">
 </p>
 
 # 📟 Arduino Distance Light Temp Hum
 
-Projeto completo que integra sensores de **temperatura (DHT11)**, **distância (HC-SR04)** e **luminosidade (HM Photosensor)** com um **servidor web Flask**, exibindo os dados em tempo real com visual moderno, barra de intensidade de luz e indicadores visuais de status.
+This project combines **temperature (DHT11)**, **distance (HC-SR04)**, and **light intensity (HM Photosensor)** sensors into a single Arduino setup, displaying real-time readings on a modern Flask-based web dashboard with a light intensity bar and status indicators.
 
 ---
 
-## 🛠️ Requisitos
+## 🛠️ Requirements
 
 ### 🔧 Arduino
-- Placa Arduino Uno ou compatível
-- Arduino IDE instalado
-- Biblioteca `DHTlib` instalada (`DHTlib-master.zip`)
+- Arduino Uno or compatible board
+- Arduino IDE installed
+- `DHTlib` library (`DHTlib-master.zip`)
 
 ### 🖥️ Python + Flask
 - Python 3.8+
-- Biblioteca `pyserial`
-- Biblioteca `flask`
+- `pyserial` library
+- `flask` library
 
-Instale com:
+Install dependencies with:
 
 ```bash
 pip install -r requirements.txt
@@ -35,85 +35,87 @@ pip install -r requirements.txt
 
 ---
 
-## ⚙️ Como usar
+## ⚙️ How to Use
 
-### 🧩 Etapa 1: Código Arduino
+### 🧩 Step 1: Arduino Code
 
-1. Abra o código `.ino` no Arduino IDE
-2. Instale a biblioteca `DHTlib`:
-   - Vá em **Sketch > Incluir Biblioteca > Adicionar biblioteca .ZIP...**
-   - Selecione o arquivo `DHTlib-master.zip`
-3. Faça o upload para o Arduino
+1. Open the `.ino` code file in the Arduino IDE
+2. Install the `DHTlib` library:
+   - Go to **Sketch > Include Library > Add .ZIP Library...**
+   - Select `DHTlib-master.zip`
+3. Upload the code to your Arduino board
 
-### 🌐 Etapa 2: Servidor Flask
+### 🌐 Step 2: Flask Web Server
 
-1. Acesse a pasta `web-server`:
+1. Navigate to the `web-server` folder:
 
 ```bash
 cd web-server
 ```
 
-2. Ative seu ambiente virtual (opcional, mas recomendado):
+2. Activate your virtual environment (optional, but recommended):
 
 ```bash
 ../venv/Scripts/activate   # Windows
 source ../venv/bin/activate  # Linux/macOS
 ```
 
-3. Execute o servidor:
+3. Start the server:
 
 ```bash
 python app.py
 ```
 
-4. Acesse no navegador:
+4. Open your browser and go to:
 ```
 http://127.0.0.1:5000
 ```
 
-A página será atualizada automaticamente a cada segundo, com um **indicador verde/vermelho** para status de leitura (OK/Erro) e uma **barra de intensidade de luz** baseada na leitura invertida (quanto mais claro, maior o valor da barra).
+The dashboard updates every second, showing a green/red LED indicator for serial read status, and a light bar that reflects the environment's brightness (inverted: the brighter the room, the fuller the bar).
+
+> 🔸 The HTML layout is now separated into an external template file.
 
 ---
 
-## 🔌 Esquema de Conexões
+## 🔌 Wiring Diagram
 
-### ✅ DHT11 Sensor (Temperatura e Umidade)
-| Pino Sensor | Pino Arduino |
-|-------------|--------------|
-| S           | D7           |
-| +           | 5V           |
-| –           | GND          |
+### ✅ DHT11 Sensor (Temperature and Humidity)
+| Sensor Pin | Arduino Pin |
+|------------|--------------|
+| S          | D7           |
+| +          | 5V           |
+| –          | GND          |
 
-### ✅ HC-SR04 Sensor Ultrassônico (Distância)
-| Pino Sensor | Pino Arduino |
-|-------------|--------------|
-| Trig        | D9           |
-| Echo        | D10          |
-| VCC         | 5V           |
-| GND         | GND          |
+### ✅ HC-SR04 Ultrasonic Sensor (Distance)
+| Sensor Pin | Arduino Pin |
+|------------|--------------|
+| Trig       | D9           |
+| Echo       | D10          |
+| VCC        | 5V           |
+| GND        | GND          |
 
-### ✅ HM Photosensor (Luminosidade)
-| Pino Sensor     | Pino Arduino |
-|------------------|--------------|
-| VCC              | 5V           |
-| GND              | GND          |
-| Analog Out       | A0           |
-| Digital Out (op) | Ignorado     |
-
----
-
-## 📊 Intensidade de Luz com Barra Visual
-
-A leitura do sensor de luminosidade agora é exibida também com uma **barra de intensidade horizontal**, invertida para refletir de forma intuitiva:
-
-- 💡 **Mais claro → barra cheia**
-- 🌑 **Mais escuro → barra vazia**
-
-Isso permite identificar rapidamente mudanças de iluminação no ambiente de forma visual.
+### ✅ HM Photosensor (Light Intensity)
+| Sensor Pin      | Arduino Pin |
+|------------------|-------------|
+| VCC              | 5V          |
+| GND              | GND         |
+| Analog Out       | A0          |
+| Digital Out (opt)| Not used    |
 
 ---
 
-## 📁 Estrutura do Projeto
+## 📊 Light Intensity Bar
+
+The light sensor reading is visually represented as a horizontal progress bar, inverted for clarity:
+
+- 💡 **Brighter → full bar**
+- 🌑 **Darker → empty bar**
+
+This makes ambient light changes immediately visible and intuitive.
+
+---
+
+## 📁 Project Structure
 
 ```
 📦 ARDUINO-DISTANCE-LIGHT-TEMP-HUM
@@ -122,7 +124,8 @@ Isso permite identificar rapidamente mudanças de iluminação no ambiente de fo
 ├── venv/
 ├── web-server/
 │   ├── app.py
-│   └── DHTlib-master.zip
+│   ├── DHTlib-master.zip
+│   └── template.html
 ├── README.md
 ├── requirements.txt
 └── testecom.py
@@ -130,21 +133,21 @@ Isso permite identificar rapidamente mudanças de iluminação no ambiente de fo
 
 ---
 
-## 🚀 Possibilidades de Expansão
+## 🚀 Possible Expansions
 
-- 📈 Adição de gráficos (Chart.js)
-- 📤 Envio para banco de dados (InfluxDB, Firebase)
-- 🌍 Deploy online via Flask + ngrok ou FastAPI
+- 📈 Add dynamic graphs with Chart.js
+- 📤 Export data to databases (InfluxDB, Firebase)
+- 🌍 Online deployment with Flask + ngrok or FastAPI
 
 ---
 
 ## 🏷️ Tags
 
-`arduino` `flask` `iot` `sensor` `web-dashboard` `real-time` `hc-sr04` `dht11` `photosensor` `python` `serial` `microcontroller` `hardware`
+`arduino`, `flask`, `iot`, `sensor`, `web-dashboard`, `real-time`, `hc-sr04`, `dht11`, `photosensor`, `python`, `serial`, `microcontroller`, `hardware`
 
 ---
 
-## 🧠 Créditos
+## 🧠 Credits
 
-Desenvolvido por [Seu Nome ou GitHub]  
-Com inspiração em projetos didáticos de integração entre hardware e web.
+Developed by [Your Name or GitHub]  
+Inspired by educational projects that blend hardware and web integration.
