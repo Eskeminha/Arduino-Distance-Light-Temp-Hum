@@ -1,128 +1,18 @@
 from flask import Flask, render_template_string, jsonify
 import serial
 import time
+import os
 
 app = Flask(__name__)
 
-last_valid_data = "Aguardando primeira leitura..."
-last_status = False  # True = sucesso, False = erro
+last_valid_data = "Please wait until first data comes through..."
+last_status = False 
 last_light_percent = 0
 
-HTML_TEMPLATE = '''
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Arduino Sensor Dashboard</title>
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3103/3103472.png" type="image/png">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background: #ffffff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 600px;
-            text-align: center;
-        }
-        h1 {
-            color: #333333;
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-        .sensor-data {
-            background: #f9f9f9;
-            border: 1px solid #ddd;
-            padding: 20px;
-            border-radius: 8px;
-            font-size: 1.3rem;
-            color: #222;
-            white-space: pre-line;
-            margin-bottom: 20px;
-        }
-        footer {
-            margin-top: 20px;
-            font-size: 0.8rem;
-            color: #888;
-        }
-        .led {
-            display: inline-block;
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            margin-left: 10px;
-            border: 1px solid #555;
-            background-color: grey;
-        }
-        .status-label {
-            font-size: 0.9rem;
-            color: #555;
-            margin-top: 8px;
-        }
-        .light-bar-container {
-            background-color: #e0e0e0;
-            border-radius: 10px;
-            height: 20px;
-            width: 100%;
-            margin-top: 10px;
-        }
-        .light-bar {
-            background-color: gold;
-            height: 100%;
-            border-radius: 10px;
-            width: 0%;
-            transition: width 0.5s ease;
-        }
-    </style>
-    <script>
-        async function fetchData() {
-            try {
-                const res = await fetch('/data');
-                const json = await res.json();
-
-                document.querySelector('.sensor-data').innerText = json.data;
-
-                const led = document.querySelector('.led');
-                led.style.backgroundColor = json.status ? 'green' : 'red';
-
-                const statusText = document.querySelector('.status-label');
-                statusText.innerText = json.status ? "Status: Leitura OK" : "Status: Erro na leitura (mostrando último valor)";
-
-                const lightPercent = json.light_percent || 0;
-                document.querySelector('.light-bar').style.width = lightPercent + "%";
-
-            } catch (err) {
-                console.error("Erro na leitura do servidor:", err);
-            }
-        }
-
-        setInterval(fetchData, 1000);
-        window.onload = fetchData;
-    </script>
-</head>
-<body>
-    <div class="container">
-        <h1>📟 Arduino Sensor Dashboard <span class="led"></span></h1>
-        <div class="sensor-data">Carregando dados...</div>
-        <div class="light-bar-container">
-            <div class="light-bar"></div>
-        </div>
-        <div class="status-label">Status: aguardando...</div>
-        <footer>Atualizado automaticamente a cada segundo.</footer>
-    </div>
-</body>
-</html>
-'''
+# Load HTML template from file
+TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), 'template.html')
+with open(TEMPLATE_PATH, 'r', encoding='utf-8') as f:
+    HTML_TEMPLATE = f.read()
 
 @app.route('/')
 def index():
@@ -132,7 +22,8 @@ def index():
 def get_data():
     global last_valid_data, last_status, last_light_percent
     try:
-        with serial.Serial(port='COM3', baudrate=9600, timeout=1) as arduino:
+        # with serial.Serial(port='COM3', baudrate=9600, timeout=1) as arduino:                         # WINDOWS
+        with serial.Serial(port='/dev/cu.usbserial-1410', baudrate=9600, timeout=1) as arduino:         # MAC
             time.sleep(0.5)
             line = ''
             attempts = 0
@@ -144,7 +35,7 @@ def get_data():
                 last_valid_data = line
                 last_status = True
 
-                # Extrair valor da luz da linha se presente (espera algo tipo "Light: 523" ou similar)
+                # Start the string extraction.
                 if "Light:" in line:
                     try:
                         parts = line.split("Light:")
@@ -156,9 +47,9 @@ def get_data():
                 else:
                     last_light_percent = 0
             else:
-                raise Exception("Linha vazia")
+                raise Exception("No data received from Arduino.")
     except Exception as e:
-        print(f"[ERRO SERIAL] {e}")
+        print(f"[SERIAL ERROR] {e}")
         last_status = False
 
     return jsonify({

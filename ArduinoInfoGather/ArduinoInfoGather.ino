@@ -12,8 +12,6 @@ void setup() {
   // Setup pins for HC-SR04
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
-
-  // No need to define pinMode for photoPin (analog input)
 }
 
 void loop() {
@@ -37,7 +35,7 @@ void loop() {
 
   // ---- Print All Data in One Line ----
   Serial.print("Temp: ");
-  Serial.print(temp, 1);         // 1 decimal place
+  Serial.print(temp, 2);
   Serial.print(" C\t");
 
   Serial.print("Hum: ");
@@ -49,7 +47,7 @@ void loop() {
   Serial.print(" cm\t");
 
   Serial.print("Light: ");
-  Serial.println(lightLevel);    // ends line
+  Serial.println(lightLevel);
 
-  delay(100); // Fast refresh rate for responsiveness
+  delay(1000); // Small delay for faster reading.
 }
