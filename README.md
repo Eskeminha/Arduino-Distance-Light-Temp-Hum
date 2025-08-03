@@ -119,8 +119,8 @@ This makes ambient light changes immediately visible and intuitive.
 
 ```
 📦 ARDUINO-DISTANCE-LIGHT-TEMP-HUM
-├── projetoluzdisttempumid/
-│   └── projetoluzdisttempumid.ino
+├── ArduinoInfoGather/
+│   └── ArduinoInfoGather.ino
 ├── venv/
 ├── web-server/
 │   ├── app.py
